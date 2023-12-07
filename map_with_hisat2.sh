@@ -109,10 +109,8 @@ if [ -z  "$UNPAIRED" ]; then
         echo "Keep unpaired reads? $UNPAIRED"
 fi
 
-# load modules
-module load samtools
-# which samtools > /dev/null || { echo "Samtools was not found in your system's PATH, exiting..."; exit 1; }
-
+# Check if tools are in your system's PATH
+which samtools > /dev/null || { echo "Samtools was not found in your system's PATH, exiting..."; exit 1; }
 
 which hisat2 > /dev/null || { echo "HISAT2 was not found in your system's PATH, exiting..."; exit 1; }
 
