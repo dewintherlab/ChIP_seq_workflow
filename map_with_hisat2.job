@@ -55,7 +55,7 @@ if [[ -z "$EXTRA" ]]; then
                                 # Keep unpaired reads
                                 log "Keeping unpaired reads"
 
-                                log "\(hisat2 -p $MYTHREADS -x \"$INDEX\" -1 \"$FASTQ1\" -2 \"$FASTQ2\" -U \"${FASTQ1/trimmed/unpaired}\",\"${FASTQ2/trimmed/unpaired}\" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz \"$OUTDIR/${OUTNAME}.unpaired.unaligned.gz\" --al-gz \"$OUTDIR/${OUTNAME}.unpaired.aligend.gz\" | samtools view -b -\) 1> \"$OUTDIR/${OUTNAME}.bam\" 2> \"$OUTDIR/${OUTNAME}.HISAT2_stats.txt\" &"
+                                log "\(hisat2 -p $MYTHREADS -x \"$INDEX\" -1 \"$FASTQ1\" -2 \"$FASTQ2\" -U \"${FASTQ1/trimmed/unpaired}\",\"${FASTQ2/trimmed/unpaired}\" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz \"$OUTDIR/${OUTNAME}.unpaired.unaligned.gz\" --al-gz \"$OUTDIR/${OUTNAME}.unpaired.aligned.gz\" | samtools view -b -\) 1> \"$OUTDIR/${OUTNAME}.bam\" 2> \"$OUTDIR/${OUTNAME}.HISAT2_stats.txt\" &"
 
                                 (hisat2 -p $MYTHREADS -x "$INDEX" -1 "$FASTQ1" -2 "$FASTQ2" -U "${FASTQ1/trimmed/unpaired}","${FASTQ2/trimmed/unpaired}" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz "$OUTDIR/${OUTNAME}.unpaired.unaligned.gz" --al-gz "$OUTDIR/${OUTNAME}.unpaired.aligend.gz" | samtools view -b -) 1> "$OUTDIR/${OUTNAME}.bam" 2> "$OUTDIR/${OUTNAME}.HISAT2_stats.txt" &
 
@@ -110,9 +110,9 @@ else
                                 # Keep unpaired reads
                                 log "Keeping unpaired reads"
 
-                                log "\(hisat2 -p $MYTHREADS -x \"$INDEX\" -1 \"$FASTQ1\" -2 \"$FASTQ2\" -U \"${FASTQ1/trimmed/unpaired}\",\"${FASTQ2/trimmed/unpaired}\" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz \"$OUTDIR/${OUTNAME}.unpaired.unaligned.gz\" --al-gz \"$OUTDIR/${OUTNAME}.unpaired.aligend.gz\" \"$EXTRA\" | samtools view -b -\) 1> \"$OUTDIR/${OUTNAME}.bam\" 2> \"$OUTDIR/${OUTNAME}.HISAT2_stats.txt\" &"
+                                log "\(hisat2 -p $MYTHREADS -x \"$INDEX\" -1 \"$FASTQ1\" -2 \"$FASTQ2\" -U \"${FASTQ1/trimmed/unpaired}\",\"${FASTQ2/trimmed/unpaired}\" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz \"$OUTDIR/${OUTNAME}.unpaired.unaligned.gz\" --al-gz \"$OUTDIR/${OUTNAME}.unpaired.aligned.gz\" \"$EXTRA\" | samtools view -b -\) 1> \"$OUTDIR/${OUTNAME}.bam\" 2> \"$OUTDIR/${OUTNAME}.HISAT2_stats.txt\" &"
 
-                                (hisat2 -p $MYTHREADS -x "$INDEX" -1 "$FASTQ1" -2 "$FASTQ2" -U "${FASTQ1/trimmed/unpaired}","${FASTQ2/trimmed/unpaired}" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz "$OUTDIR/${OUTNAME}.unpaired.unaligned.gz" --al-gz "$OUTDIR/${OUTNAME}.unpaired.aligend.gz" "$EXTRA" | samtools view -b -) 1> "$OUTDIR/${OUTNAME}.bam" 2> "$OUTDIR/${OUTNAME}.HISAT2_stats.txt" &
+                                (hisat2 -p $MYTHREADS -x "$INDEX" -1 "$FASTQ1" -2 "$FASTQ2" -U "${FASTQ1/trimmed/unpaired}","${FASTQ2/trimmed/unpaired}" --mm --add-chrname --new-summary --no-spliced-alignment --un-gz "$OUTDIR/${OUTNAME}.unpaired.unaligned.gz" --al-gz "$OUTDIR/${OUTNAME}.unpaired.aligned.gz" "$EXTRA" | samtools view -b -) 1> "$OUTDIR/${OUTNAME}.bam" 2> "$OUTDIR/${OUTNAME}.HISAT2_stats.txt" &
 
                         else
                                 # Don't keep unpaired reads
