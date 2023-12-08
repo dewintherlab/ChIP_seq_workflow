@@ -123,8 +123,5 @@ JOB="/path/to/map_with_hisat2.job"
 # time of submission
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
-NODECORES=64
-let "MAXCORES = $NODECORES -1"
-
 # submit
-sbatch --cpus-per-task=4 --mincpus=$MAXCORES --time=$MAXTIME --export=ALL,EXPDIR=$EXPDIR,SEQ=$SEQ,INDEX=$INDEX,UNPAIRED=$UNPAIRED,EXTRA="$EXTRA",MYTHREADS=$MYTHREADS, $JOB
+sbatch --mincpus=$MYTHREADS --time=$MAXTIME --export=ALL,EXPDIR=$EXPDIR,SEQ=$SEQ,INDEX=$INDEX,UNPAIRED=$UNPAIRED,EXTRA="$EXTRA",MYTHREADS=$MYTHREADS, $JOB
