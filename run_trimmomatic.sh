@@ -116,10 +116,5 @@ JOB="/path/to/run_trimmomatic.job"
 # time of submission
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
-NODECORES=64
-let "MAXCORES = $NODECORES -1"
-
-echo "$ADAPTERS"
-
 # submit
-sbatch --cpus-per-task=4 --mincpus=$MAXCORES --time=$MAXTIME --export=ALL,EXPDIR=$EXPDIR,SEQ=$SEQ,ADAPTERS=$ADAPTERS,MEM=$MEM,HEAPSIZE=$HEAPSIZE,EXTRA="$EXTRA",THREADS=8 $JOB
+sbatch --mincpus=8 --time=$MAXTIME --export=ALL,EXPDIR=$EXPDIR,SEQ=$SEQ,ADAPTERS=$ADAPTERS,MEM=$MEM,HEAPSIZE=$HEAPSIZE,EXTRA="$EXTRA",THREADS=8 $JOB
