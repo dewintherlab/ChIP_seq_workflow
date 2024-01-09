@@ -1,0 +1,108 @@
+#! /bin/bash
+#SBATCH --job-name=macs3_callpeak_job
+#SBATCH --output=macs3_callpeak_job_%j.output
+#SBATCH --error=macs3_callpeak_job_%j.log
+####################################################################
+# Function to log messages
+####################################################################
+log() {
+        echo -e "$(date +"%Y-%m-%d %H:%M:%S") - $1"
+}
+
+
+#######################################################################
+
+# MACS3 CALLPEAK
+
+#######################################################################
+
+# Move to expdir
+cd "$EXPDIR"
+
+# Source pairings file
+source "$pairs_file"
+
+# Find input samples
+
+inputs=()
+inputs=($(ls "$EXPDIR" | grep -hiE ".*IgG.*${SUFFIX}$|.*Input.*${SUFFIX}$"))
+
+log "The following files are assumed to be inputs:"
+for i in "${inputs[@]}"; do log "$i"; done
+
+# and non-inputs
+
+samples=()
+samples=($(ls "$EXPDIR" | grep -vhiE ".*IgG.*|.*Input.*" | grep -hiE ".*${SUFFIX}$"))
+log "The following files are assumed to be your samples of interest:"
+for f in "${samples[@]}"; do log "$f"; done
+
+# Run MACS3 callpeak command
+
+for f in "${samples[@]}"; do
+
+                log "Processing file: $f"
+                ALLFIELDS=()
+                ALLFIELDS=($(echo "$f" | tr '[:punct:]' ' '))
+                log "All fields: ${ALLFIELDS[*]}"
+
+                # isolate user-defined NFIELDS from ALLFIELDS
+                ## split NFIELDS with comma as delimiter
+                IFS=',' read -ra ranges <<< "$NFIELDS"
+
+                # Init ARRAY with resulting fields
+                KEYFIELDS=()
+
+                for range in "${ranges[@]}"; do
+                        if [[ "$range" =~ - ]]; then
+                                # now we handle cases like 1-3
+                                IFS='-' read -ra range_parts <<< "$range"
+                                start="${range_parts[0]}"
+                                log "Start field: $start"
+                                end="${range_parts[1]}"
+                                log "End field: $end"
+                                KEYFIELDS+=("${ALLFIELDS[@]:start-1:end-start+1}")
+                        else
+                                # now we handle comma-separated cases
+                                KEYFIELDS+=("${ALLFIELDS[$((range-1))]}")
+                        fi
+                done
+
+                SAMPLEOUT=$(IFS='_'; echo "${KEYFIELDS[*]}")
+                log "The following fields will be kept in the output name: $SAMPLEOUT"
+
+        if [[ "$INPUT" == "Y" ]]; then
+                # We have input
+
+                # Specify based on which input the sample's peaks should be called
+
+                        # Now check which type of peak mode was provided
+                        if [[ "$PEAK" == "B" ]]; then
+
+                                log "Calling peaks: macs3 callpeak -t $f -c \"${pairings[\"$f\"]}\" --outdir $OUTDIR -n $SAMPLEOUT_over_$INPUTOUT.macs3.broad --format $FORMAT --broad $EXTRA"
+                                macs3 callpeak -t "$f" -c "${pairings["$f"]}" --outdir "$OUTDIR" -n "$SAMPLEOUT".macs3.broad --broad --format "$FORMAT" $EXTRA
+
+                        else # narrow peak mode
+
+                                log "Calling peaks: macs3 callpeak -t $f -c \${pairings[\"$f\"]}\" --outdir $OUTDIR -n $SAMPLEOUT_over_$INPUTOUT.macs3 --format $FORMAT $EXTRA"
+                                macs3 callpeak -t "$f" -c "${pairings["$f"]}" --outdir "$OUTDIR" -n "$SAMPLEOUT".macs3 --format "$FORMAT" $EXTRA
+                        fi
+
+        else
+                # No INPUT
+                # Now check which type of peak mode was provided
+                if [[ "$PEAK" == "B" ]]; then
+
+                        log "Calling peaks: macs3 callpeak -t $f --outdir $OUTDIR -n $SAMPLEOUT.macs3.broad --broad --format $FORMAT $EXTRA"
+                        macs3 callpeak -t "$f" --outdir "$OUTDIR" -n "$SAMPLEOUT".macs3.broad --broad --format "$FORMAT" $EXTRA
+
+                else # narrow peak mode
+
+                        log "Calling peaks: macs3 callpeak -t $f --outdir $OUTDIR -n $SAMPLEOUT.macs3 --format $FORMAT $EXTRA"
+                        macs3 callpeak -t "$f" --outdir "$OUTDIR" -n "$SAMPLEOUT".macs3 --format "$FORMAT" $EXTRA
+                fi
+        fi
+done
+
+log "Waiting for MACS3 to complete..."
+wait
