@@ -84,7 +84,7 @@ for f in "${samples[@]}"; do
 
                         else # narrow peak mode
 
-                                log "Calling peaks: macs3 callpeak -t $f -c \${pairings[\"$f\"]}\" --outdir $OUTDIR -n $SAMPLEOUT_over_$INPUTOUT.macs3 --format $FORMAT $EXTRA"
+                                log "Calling peaks: macs3 callpeak -t $f -c \"${pairings[\"$f\"]}\" --outdir $OUTDIR -n $SAMPLEOUT_over_$INPUTOUT.macs3 --format $FORMAT $EXTRA"
                                 macs3 callpeak -t "$f" -c "${pairings["$f"]}" --outdir "$OUTDIR" -n "$SAMPLEOUT".macs3 --format "$FORMAT" $EXTRA
                         fi
 
