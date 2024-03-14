@@ -54,9 +54,9 @@ cd $EXPDIR
 
 if [[ "$SEQ" == "paired" ]]; then
 
-        for FASTQ1 in $EXPDIR/*R1*fastq*; do
+        for FASTQ1 in $EXPDIR/*_R1_*fastq*; do
 
-                FASTQ2=${FASTQ1/R1/R2}
+                FASTQ2=${FASTQ1/_R1_/_R2_}
 
                 if [[ $FASTQ1 == *.gz ]]; then
 
