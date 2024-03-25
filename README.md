@@ -19,3 +19,8 @@ Here we map paired reads to the latest version of GRCh38 assembly using 16 threa
 
 /path/to/post_alignment_filtering.sh -b /path/to/mapped_reads -o /path/to/mapped_reads/filtered_reads -t 16
 
+Part 2) Call peaks with MACS3
+
+/path/to/macs3_callpeak.sh -e /dir/with/filtered/reads -s bam -o /output/dir/name -i N -p B -f BAMPE -d "--broad-cutoff 0.1 -q 0.05 --gsize 2862010428" -n 1-6
+
+Here, I call peaks without an input control using the broad peak mode provided by MACS3. When using this mode, please provide a --broad-cutoff value.
